@@ -1,41 +1,39 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 
-int main(void){
-    FILE *filePtr;
-    char ch;
-    short int retVal = 0;
-    char startFlag = 0;
+typedef struct state_t {  
+        int current;  
+        int final;  
+        delta_t *deltas;  // Pointer to the deltas[] table  
+        void *ctx;  // use this to pass data to the callback  
+} state_t;
 
-    filePtr = fopen("input.txt","r");
+typedef struct delta_t{
+     int current;
+        int event;
+        int next;
+        //callback_t callback;
+} delta_t;
 
-    while ((ch = fgetc(filePtr)) != EOF) {
-        //printf("%c", ch);
-        if(startFlag > 8){
-            //reset start flag
-            printf("\nresult: 0x%X\n",retVal);
-            retVal = 0;
-            startFlag = 0;
-        }
-        if(startFlag > 0){
-            if(ch == '1'){
-                retVal = retVal | (0b00000001 << (startFlag - 1) );
-            }
-            
-            //printf(" started\n");
-            startFlag++;
-        }
-        if(ch == '0' && startFlag == 0){ 
-            //set start flag
-            startFlag = 1;
-            //printf(" set start\n");
-        }
-        
-    }
-    fclose(filePtr);
+void state_constructor(state_t *state, int Initial, int Final, delta_t *Deltas, void *Context);
+
+int main(){
+    state_t *statevar = NULL;
+    //statevar = malloc(sizeof(state_t));
     
-
+    printf("%d", statevar->current);
     return 0;
-    
+}
+
+void state_constructor(state_t *state, int Initial, int Final, delta_t *Deltas, void *Context){
+    state = malloc(sizeof(state_t));
+
+    state->current = Initial;
+    state->final = Final;
+    //allocate memory for Deltas
+    Deltas = malloc(sizeof(Deltas));
+    state->deltas = Deltas;
+    //allocate memory for Context
+    Context = malloc(sizeof(Context));
+    state->ctx = Context;
 }
